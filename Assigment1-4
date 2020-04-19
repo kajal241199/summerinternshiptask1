@@ -1,4 +1,127 @@
-## task 1 for creating directory
+## task 1 for creating directory using single command
 
 ## answer is:
 mkdir -p a/{b/{d/{i/m/z,j/l/z},e/h/l/z},c/{f/h/l/z,g/k/l/z}}
+
+
+
+#task 2
+## answer is:
+#Part-1 Make User And Restrict Him To Execute Only date Command
+#To Create Another Bash Shell
+
+ln -s /bin/bash /bin/resbash
+
+#Creating New User & Assigning Custom Shell
+adduser --shell /bin/resbash --home /home/resuser resuser
+
+#Creating bin Directory (We Can Use Another Name Of Directory)
+mkdir -p /home/resuser/bin 
+
+#Linking Only date Command
+ln -s /bin/date /home/resuser/bin/date 
+
+#sudo To Shell
+ln -s /usr/bin/sudo /home/resuser/bin/sudo
+
+#Switching To resuser User & Adding Custom Path To Shell
+su - resuser
+# Edit .profile File 
+nano .profile
+
+PATH=$HOME/bin
+export PATH
+
+# Save It #
+source ~/.bashrc
+
+#Changing Permissions & File Attributes
+chmod 755 .profile
+chattr +i .profile
+exit
+
+#Login Again
+su - resuser
+date
+#date Command Work But Other Commands Won't Work
+
+#Part-2 Root User Can't Execute date Command
+#Editing sudoers File To Change sudo Powers for root and resuser user
+
+su - root
+nano /etc/sudoers
+
+#Make These Changes
+root ALL=(ALL:ALL) ALL, !/bin/date
+resuser ALL=(ALL:ALL) /bin/date
+%sudo   ALL=(ALL:ALL)  ALL, !/bin/date
+
+### Save It ###
+#Changing root permission to not excecute date
+chmod -x /bin/date
+
+##Trying It
+date
+sudo date
+
+
+#task 3
+# answer is:
+#Create Two Users & Give Access To Transfer Directories & Files To Each Other's Home Drirectory
+#Creating Two Users (test1 & test2)
+
+adduser --shell /bin/bash --home /home/test1 test1
+adduser --shell /bin/bash --home /home/test2 test2
+
+#Login test1 & Changing Directory Permissions
+su - test1
+mkdir dir1 
+cd dir1 
+touch file1.txt
+setfacl -m u:test2:rw /home/test1/
+exit
+
+#Login test2 & Changing Directory Permissions
+su - test2
+mkdir dir2 
+cd dir2 
+touch file2.txt
+setfacl -m u:test1:rw /home/test2/
+
+#Copying Data From test2 To test1
+cp -r /home/test2/dir2 /home/test1/
+exit
+#Login To test1
+su - test1
+
+#Check Files 
+ls 
+
+#Copying To test2
+cp -r /home/test1/dir1 /home/test2
+exit
+#Logging Back To test2
+su - test2
+#Check For dir1
+ls
+
+
+#task4 
+# answer is:
+#Executing cal Command For 10 Seconds And Store Output in output.txt file
+#Creating Shell File
+nano cal.sh
+
+#! /bin/bash
+stop_at=$((SECONDS+10))
+while [ $SECONDS -lt $stop_at ]; do
+   cal >> output.txt
+done
+
+#Save It
+#Change Executing Permission for user
+chmod +x cal.sh
+#Running It
+./cal.sh
+#Checking The Output
+cat caloutput.txt
