@@ -1,0 +1,39 @@
+#task 1#
+
+##Dockerfile
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install nano
+RUN apt install ansible -y
+RUN apt install docker.io -y
+
+##Creating docker image
+docker build -t kajal:ansible   
+
+##Creating a container
+docker run -itv /var/run/docker.sock:/var/run/docker.sock --name ansible kajal:ansible bash
+
+
+cd /etc/ansible/
+mkdir playbooks
+nano ansct.yaml
+
+##ansct.yaml
+---
+ - hosts: localhost
+   tasks:
+    - name: Pulling alpine image
+      command: docker pull alpine
+    - name: running ping command
+      command:  docker run --name kc"{{ item }}" alpine ping fb.com 
+      with_items:
+        - [1,2,3,4,5,6,7,8,9,10]
+        
+ansible-playbook ansct.yaml
+docker ps
+
+
+
+.
+
+
