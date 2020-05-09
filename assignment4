@@ -13,9 +13,11 @@ docker build -t kajal:ansible
 ##Creating a container
 docker run -itv /var/run/docker.sock:/var/run/docker.sock --name ansible kajal:ansible bash
 
-
+#Accessing ansible
 cd /etc/ansible/
+#Creating a directory
 mkdir playbooks
+#Creating a script to create 10 container of alpine image with parent command fb.com
 nano ansct.yaml
 
 ##ansct.yaml
@@ -28,7 +30,8 @@ nano ansct.yaml
       command:  docker run --name kc"{{ item }}" alpine ping fb.com 
       with_items:
         - [1,2,3,4,5,6,7,8,9,10]
-        
+
+#Executing a playbook
 ansible-playbook ansct.yaml
 docker ps
 
