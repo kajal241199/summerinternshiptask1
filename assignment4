@@ -2,6 +2,7 @@
 
 ##Dockerfile
 FROM ubuntu
+MAINTAINER singhvikajal258@gmail.com
 RUN apt-get update
 RUN apt-get install nano
 RUN apt install ansible -y
