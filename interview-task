@@ -1,0 +1,48 @@
+#pod-file(podtest.yaml)
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    app: pod
+  name: podk
+spec:
+  containers:
+  - image: nginx
+    name: podct
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+
+#service-file(svc.yaml)
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  labels:
+    app: svc
+spec:
+  selector:
+    app: pod
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 9376
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 9377
+  type: NodePort
+  
+  kubectl create -f podtest.yaml   #creating pod
+  kubectl create -f svc.yaml       #creating service
+  kubectl get pods                 #listing all the pods
+  kubectl get svc                  #listing all the services
+  
+  
+  
